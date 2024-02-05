@@ -16,14 +16,14 @@ namespace SudokuSolver.Tests
         }
 
         [Test]
-        public void CanFindOne()
+        public void Light()
         {
-            var id = Guid.NewGuid();
+            var background = "light";
 
             (int row, int col) start = (403, 21);
             (int row, int col) end = (1442, 1059);
 
-            using var puzzle = Image.Load<Rgba32>(@"..\..\..\..\..\assets\puzzles\light\sudoku-light.jpg");
+            using var puzzle = Image.Load<Rgba32>(@$"..\..\..\..\..\assets\puzzles\sudoku-{background}.jpg");
 
             puzzle.Mutate(x => x.Crop(new Rectangle(start.col, start.row, end.col - start.col, end.row - start.row)));
 
@@ -36,8 +36,12 @@ namespace SudokuSolver.Tests
             using var engine = new TesseractEngine(@"C:\Program Files\Tesseract-OCR\tessdata", "eng", EngineMode.Default);
             engine.SetVariable("tessedit_char_whitelist", "0123456789");
 
+            List<List<int>> grid = new();
+
             for (int row = 0; row < 9; row++)
             {
+                List<int> gridRows = new();
+
                 for (int col = 0; col < 9; col++)
                 {
                     int startCol = 0 + col * (width + horizontalOffset) + borderWidth;
@@ -50,13 +54,14 @@ namespace SudokuSolver.Tests
                     using MemoryStream stream = new();
 
                     copy.SaveAsPng(stream);
+                    copy.SaveAsPng($@"..\..\..\..\..\assets\puzzles\R{row}C{col}.png");
 
                     stream.Seek(0, SeekOrigin.Begin);
 
                     using var img = Pix.LoadFromMemory(stream.ToArray());
                     using var page = engine.Process(img, PageSegMode.SingleChar);
 
-                    int value = !string.IsNullOrEmpty(page.GetText()) ? int.Parse(page.GetText()) : 0;
+                    var value = page.GetText();
                 }
             }
         }
