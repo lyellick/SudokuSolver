@@ -53,6 +53,8 @@ namespace SudokuSolver.Tests
 
             //engine.SetVariable("tessedit_char_whitelist", "123456789");
 
+
+            // revert row / col loop code and place current code above the col loop which I can then use to check each cell accross. 
             for (int row = 0; row < 9; row++)
             {
                 var copy = puzzle.Clone(x => x.Grayscale().Crop(new Rectangle(0, row * (height + verticalOffset), puzzle.Width, height)));
