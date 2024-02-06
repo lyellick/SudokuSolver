@@ -51,44 +51,24 @@ namespace SudokuSolver.Tests
 
             using var engine = new TesseractEngine(@"C:\Program Files\Tesseract-OCR\tessdata", "eng", EngineMode.Default);
 
-            engine.SetVariable("tessedit_char_whitelist", "123456789");
+            //engine.SetVariable("tessedit_char_whitelist", "123456789");
 
-            List<List<string>> grid = new();
-            string p = "";
             for (int row = 0; row < 9; row++)
             {
-                List<string> gridRows = new();
+                var copy = puzzle.Clone(x => x.Grayscale().Crop(new Rectangle(0, row * (height + verticalOffset), puzzle.Width, height)));
 
-                for (int col = 0; col < 9; col++)
-                {
-                    int startCol = col % 3 != 0 ? col * (width + horizontalOffset) + borderWidth : col * (width + horizontalOffset);
-                    int startRow = row % 3 != 0 ? row * (height + verticalOffset) + borderWidth : row * (height + verticalOffset);
-                    int endCol = startCol + width;
-                    int endRow = startRow + height;
+                using MemoryStream stream = new();
 
-                    var copy = puzzle.Clone(x => x.Grayscale().Crop(new Rectangle(startCol, startRow, endCol - startCol, endRow - startRow)));
+                copy.SaveAsPng(stream);
+                copy.SaveAsPng($@"..\..\..\..\..\assets\puzzles\R{row}.png");
 
-                    copy.Mutate(x => x.Resize(new ResizeOptions { Size = new Size(width * 3, height * 3) }));
+                stream.Seek(0, SeekOrigin.Begin);
 
-                    using MemoryStream stream = new();
-
-                    copy.SaveAsPng(stream);
-                    copy.SaveAsPng($@"..\..\..\..\..\assets\puzzles\R{row}C{col}.png");
-
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    using var img = Pix.LoadFromMemory(stream.ToArray());
-                    using var page = engine.Process(img, PageSegMode.SingleChar);
-
-                    var value = page.GetText();
-
-                    gridRows.Add(value);
-                    p += value.Replace("\n", "");
-
-                    //File.Delete($@"..\..\..\..\..\assets\puzzles\R{row}C{col}.png");
-                }
-                p += "\n";
-                grid.Add(gridRows);
+                using var img = Pix.LoadFromMemory(stream.ToArray());
+                using var page = engine.Process(img, PageSegMode.SingleLine);
+                // to figure out what part the number exists within the 9 places I need to split each cell into its cell width and height and see if it has whitespace.
+                // Whitespace is an empty cell while a cell with something in it will be the next number.
+                var value = page.GetText();
             }
         }
 
