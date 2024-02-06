@@ -75,7 +75,7 @@ namespace SudokuSolver.Tests
 
                 var sections = sectionPage.GetText().Trim().Replace("\n", "").Replace(" ", "");
 
-                List<bool> sectionsMap = new();
+                List<bool> sectionsMap = [];
 
                 for (int col = 0; col < 9; col++)
                 {
