@@ -9,6 +9,8 @@ namespace SudokuSolver.Shared.Services
     public interface ISudokuSolverService
     {
         int[][] ExtractGrid(MemoryStream imageStream);
+
+        int[][] ExtractGrid(string path);
     }
 
     public class SudokuSolverService : ISudokuSolverService
@@ -108,6 +110,18 @@ namespace SudokuSolver.Shared.Services
             }
 
             return sudoku.Select(row => row.ToArray()).ToArray();
+        }
+
+        public int[][] ExtractGrid(string path)
+        {
+            using var image = File.OpenRead(path);
+
+            using var imageStream = new MemoryStream();
+            image.CopyTo(imageStream);
+
+            var extract = ExtractGrid(imageStream);
+
+            return extract;
         }
     }
 }

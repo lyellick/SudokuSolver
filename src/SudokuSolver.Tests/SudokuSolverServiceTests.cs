@@ -36,12 +36,7 @@ namespace SudokuSolver.Tests
 
             ISudokuSolverService service = new SudokuSolverService();
 
-            using var image = File.OpenRead(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
-
-            using var imageStream = new MemoryStream();
-            image.CopyTo(imageStream);
-
-            var extract = service.ExtractGrid(imageStream);
+            var extract = service.ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
 
             Assert.That(puzzle.IsEqualTo(extract), Is.True);
         }
