@@ -29,18 +29,19 @@ namespace SudokuSolver.Tests
             puzzle.Mutate(x => x.Crop(new Rectangle(start.col, start.row, end.col - start.col, end.row - start.row)));
 
             puzzle.Mutate(x => x.GaussianBlur(3));
-            puzzle.Mutate(x => x.Invert());
-            puzzle.Mutate(x => x.BinaryThreshold(0.4f));
+            puzzle.Mutate(x => x.BinaryThreshold(0.5f));
 
             puzzle.Mutate(x =>
             {
                 int startCol = 343;
                 int startRow = 0;
 
-                Color fillColor = Color.Black;
+                Color fill = Color.White;
 
-                FloodFill(puzzle, startCol, startRow, fillColor);
+                FloodFill(puzzle, startCol, startRow, fill);
             });
+
+            puzzle.Mutate(x => x.Invert());
 
             puzzle.SaveAsPng($@"..\..\..\..\..\assets\puzzles\puzzle.png");
 
@@ -52,7 +53,7 @@ namespace SudokuSolver.Tests
 
             using var engine = new TesseractEngine(@"C:\Program Files\Tesseract-OCR\tessdata", "eng", EngineMode.Default);
 
-            //engine.SetVariable("tessedit_char_whitelist", "0123456789");
+            engine.SetVariable("tessedit_char_whitelist", "123456789");
 
             List<List<string>> grid = new();
             string p = "";
@@ -69,7 +70,7 @@ namespace SudokuSolver.Tests
 
                     var copy = puzzle.Clone(x => x.Grayscale().Crop(new Rectangle(startCol, startRow, endCol - startCol, endRow - startRow)));
 
-                    copy.Mutate(x => x.Resize(new ResizeOptions { Size = new Size(width * 5, height * 5) }));
+                    copy.Mutate(x => x.Resize(new ResizeOptions { Size = new Size(width * 3, height * 3) }));
 
 
 
