@@ -34,9 +34,9 @@ namespace SudokuSolver.Tests
                 [2,0,9,5,3,8,7,6,0]
             };
 
-            ISudokuSolverService service = new SudokuSolverService();
 
-            var extract = service.ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
+            var extract = new SudokuSolverService()
+                .ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
 
             Assert.That(puzzle.IsEqualTo(extract), Is.True);
         }
