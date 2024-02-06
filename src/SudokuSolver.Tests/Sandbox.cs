@@ -19,7 +19,9 @@ namespace SudokuSolver.Tests
         [Test]
         public void Light()
         {
-            bool show = true;
+            List<List<int>> sudoku = new();
+
+            bool show = false;
 
             var background = "light";
 
@@ -53,6 +55,8 @@ namespace SudokuSolver.Tests
 
             using var engine = new TesseractEngine(@"C:\Program Files\Tesseract-OCR\tessdata", "eng", EngineMode.Default);
 
+            engine.SetVariable("tessedit_char_whitelist", "123456789");
+
             for (int row = 0; row < 9; row++)
             {
                 var section = puzzle.Clone(x => x.Grayscale().Crop(new Rectangle(0, row * (height + verticalOffset), puzzle.Width, height)));
@@ -69,7 +73,7 @@ namespace SudokuSolver.Tests
                 using var sectionImage = Pix.LoadFromMemory(sectionStream.ToArray());
                 using var sectionPage = engine.Process(sectionImage, PageSegMode.SingleLine);
 
-                var sections = sectionPage.GetText().Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+                var sections = sectionPage.GetText().Trim().Replace("\n", "").Replace(" ", "");
 
                 List<bool> sectionsMap = new();
 
@@ -92,7 +96,7 @@ namespace SudokuSolver.Tests
                         cell.SaveAsPng($@"..\..\..\..\..\assets\puzzles\R{row}C{col}.png");
                 }
 
-                List<int> cells = new();
+                List<int> cells = [];
 
                 int plot = 0;
 
@@ -100,7 +104,7 @@ namespace SudokuSolver.Tests
                 {
                     if (sectionsMap[i])
                     {
-                        cells.Add(int.Parse(sections[plot]));
+                        cells.Add(int.Parse(sections[plot].ToString()));
                         plot++;
                     }
                     else
@@ -108,6 +112,8 @@ namespace SudokuSolver.Tests
                         cells.Add(0);
                     }
                 }
+
+                sudoku.Add(cells);
             }
         }
 
