@@ -41,8 +41,6 @@ namespace SudokuSolver.Tests
                 FloodFill(puzzle, startCol, startRow, fill);
             });
 
-            puzzle.Mutate(x => x.Invert());
-
             puzzle.SaveAsPng($@"..\..\..\..\..\assets\puzzles\puzzle.png");
 
             (int width, int height) = (108, 110);
@@ -71,8 +69,6 @@ namespace SudokuSolver.Tests
                     var copy = puzzle.Clone(x => x.Grayscale().Crop(new Rectangle(startCol, startRow, endCol - startCol, endRow - startRow)));
 
                     copy.Mutate(x => x.Resize(new ResizeOptions { Size = new Size(width * 3, height * 3) }));
-
-
 
                     using MemoryStream stream = new();
 
