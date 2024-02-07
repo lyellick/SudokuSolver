@@ -19,7 +19,7 @@ namespace SudokuSolver.Tests
         }
 
         [Test]
-        public void Light()
+        public void PuzzleIsEqualToExtract()
         {
             int[][] puzzle =
 {
