@@ -15,6 +15,10 @@ namespace SudokuSolver.Shared.Services
         (int row, int col) GetSectionCenter((int row, int col) location);
 
         int[][] GetSection((int row, int col) location, int[][] source);
+
+        int[] GetRow((int row, int col) location, int[][] source);
+
+        int[] GetColumn((int row, int col) location, int[][] source);
     }
 
     public class SudokuSolverService : ISudokuSolverService
@@ -147,7 +151,7 @@ namespace SudokuSolver.Shared.Services
 
             for (int r = start; r <= end; r++)
             {
-                List<int> cols = new();
+                List<int> cols = [];
 
                 for (int c = left; c <= right; c++)
                     cols.Add(source[r][c]);
@@ -157,6 +161,26 @@ namespace SudokuSolver.Shared.Services
             }
 
             return section;
+        }
+
+        public int[] GetRow((int row, int col) location, int[][] source)
+        {
+            int[] cells = new int[9];
+
+            for (int col = 0; col < 9; col++)
+                cells[col] = source[location.row][col];
+
+            return cells;
+        }
+
+        public int[] GetColumn((int row, int col) location, int[][] source)
+        {
+            int[] cells = new int[9];
+
+            for (int row = 0; row < 9; row++)
+                cells[row] = source[row][location.col];
+
+            return cells;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SudokuSolver.Shared.Extensions
 {
-    public static class JaggedArrayExtension
+    public static class CollectionExtension
     {
         public static bool IsEqualTo(this int[][] target, int[][] to)
         {
@@ -18,6 +18,18 @@
                         return false;
                 }
             }
+
+            return true;
+        }
+
+        public static bool IsEqualTo(this int[] target, int[] to)
+        {
+            if (target.Length != to.Length)
+                return false;
+
+            for (int i = 0; i < target.Length; i++)
+                if (target[i] != to[i])
+                    return false;
 
             return true;
         }
