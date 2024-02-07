@@ -19,6 +19,12 @@ namespace SudokuSolver.Shared.Services
         int[] GetRow((int row, int col) location, int[][] source);
 
         int[] GetColumn((int row, int col) location, int[][] source);
+
+        bool ExistsInSection((int row, int col) location, int[][] source);
+
+        bool ExistsInRow((int row, int col) location, int[][] source);
+
+        bool ExistsInColumn((int row, int col) location, int[][] source);
     }
 
     public class SudokuSolverService : ISudokuSolverService
@@ -181,6 +187,31 @@ namespace SudokuSolver.Shared.Services
                 cells[row] = source[row][location.col];
 
             return cells;
+        }
+
+        public bool ExistsInSection((int row, int col) location, int[][] source)
+        {
+            int value = source[location.row][location.col];
+
+            return source.Any(row => row.Contains(value));
+        }
+
+        public bool ExistsInRow((int row, int col) location, int[][] source)
+        {
+            int value = source[location.row][location.col];
+
+            var row = GetRow(location, source);
+
+            return row.Any(col => col == value);
+        }
+
+        public bool ExistsInColumn((int row, int col) location, int[][] source)
+        {
+            int value = source[location.row][location.col];
+
+            var column = GetColumn(location, source);
+
+            return column.Any(row => row == value);
         }
     }
 }
