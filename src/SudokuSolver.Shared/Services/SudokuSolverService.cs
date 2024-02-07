@@ -213,5 +213,29 @@ namespace SudokuSolver.Shared.Services
 
             return column.Any(row => row == value);
         }
+
+        public bool ValidateRow(int row, int[][] source)
+        {
+            return source[row].Select(col => col).Sum() == 45;
+        }
+
+        public bool ValidateColumn(int col, int[][] source)
+        {
+            return source.Select(row => row[col]).Sum() == 45;
+        }
+
+        public bool ValidateSection((int row, int col) location, int[][] source)
+        {
+            var center = GetSection(location, source);
+
+            return center.Sum(row => row.Sum(col => col)) == 35;
+        }
+
+        public int[][] Backtrack(int[][] source)
+        {
+            Queue<int> queue = new Queue<int>();
+
+            return default;
+        }
     }
 }
