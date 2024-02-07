@@ -39,6 +39,11 @@ namespace SudokuSolver.Tests
                 .ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
 
             Assert.That(puzzle.IsEqualTo(extract), Is.True);
+
+            // TODO:
+            // Select cell based on row and column.
+            // Get 3x3 cells based on cell.
+            // Get horizontal and vertical cells.
         }
     }
 }
