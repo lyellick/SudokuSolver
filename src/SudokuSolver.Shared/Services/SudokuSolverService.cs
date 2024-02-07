@@ -21,11 +21,7 @@ namespace SudokuSolver.Shared.Services
     {
         public int[][] ExtractGrid(MemoryStream imageStream)
         {
-            List<List<int>> sudoku = new();
-
-            bool show = false;
-
-            var background = "light";
+            List<List<int>> sudoku = [];
 
             (int row, int col) start = (403, 21);
             (int row, int col) end = (1442, 1059);
