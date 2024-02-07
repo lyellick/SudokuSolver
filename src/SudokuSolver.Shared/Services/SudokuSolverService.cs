@@ -11,6 +11,10 @@ namespace SudokuSolver.Shared.Services
         int[][] ExtractGrid(MemoryStream imageStream);
 
         int[][] ExtractGrid(string path);
+
+        (int row, int col) GetSectionCenter((int row, int col) location);
+
+        int[][] GetSection((int row, int col) location, int[][] source);
     }
 
     public class SudokuSolverService : ISudokuSolverService
@@ -122,6 +126,41 @@ namespace SudokuSolver.Shared.Services
             var extract = ExtractGrid(imageStream);
 
             return extract;
+        }
+
+        public (int row, int col) GetSectionCenter((int row, int col) location)
+        {
+            int row = Math.DivRem(location.row, 3, out _);
+            int col = Math.DivRem(location.col, 3, out _);
+
+            return ((row * 3) + 3 / 2, (col * 3) + 3 / 2);
+        }
+
+        public int[][] GetSection((int row, int col) location, int[][] source)
+        {
+            var (row, col) = GetSectionCenter(location);
+
+            int[][] section = new int[3][];
+
+            int start = row - (3) / 2;
+            int end = row + (3) / 2;
+            int left = col - (3) / 2;
+            int right = col + (3) / 2;
+
+            int i = 0;
+
+            for (int r = start; r <= end; r++)
+            {
+                List<int> cols = new();
+
+                for (int c = left; c <= right; c++)
+                    cols.Add(source[r][c]);
+
+                section[i] = [.. cols];
+                i++;
+            }
+
+            return section;
         }
     }
 }

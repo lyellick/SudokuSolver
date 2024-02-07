@@ -22,7 +22,7 @@ namespace SudokuSolver.Tests
         public void PuzzleIsEqualToExtract()
         {
             int[][] puzzle =
-{
+            {
                 [9,2,0,0,4,0,0,0,1],
                 [0,0,0,8,9,1,0,5,0],
                 [0,5,1,7,0,6,3,0,0],
@@ -34,8 +34,9 @@ namespace SudokuSolver.Tests
                 [2,0,9,5,3,8,7,6,0]
             };
 
+            ISudokuSolverService service = new SudokuSolverService();
 
-            var extract = new SudokuSolverService()
+            var extract = service
                 .ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
 
             Assert.That(puzzle.IsEqualTo(extract), Is.True);
