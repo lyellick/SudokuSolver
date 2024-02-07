@@ -90,9 +90,18 @@ namespace SudokuSolver.Tests
         }
 
         [Test]
-        public void GetAvailableValuesIsValid()
+        public void GetRemainingValuesIsValid()
         {
-            var available = _service.GetAvailableValues((4,0), _puzzle);
+            var remainingRowValues = _service.GetRemainingRowValues((4,0), _puzzle);
+            var remainingColumnsValues = _service.GetRemainingColumnValues((4, 0), _puzzle);
+            var remainingSections = _service.GetRemainingSectionValues((4, 0), _puzzle);
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(remainingRowValues.IsEqualTo([1, 2, 3, 5, 6, 9]), Is.True);
+                Assert.That(remainingColumnsValues.IsEqualTo([3, 4, 5, 7, 8]), Is.True);
+                Assert.That(remainingSections.IsEqualTo([2, 3, 5, 7, 8, 9]), Is.True);
+            });
         }
     }
 }

@@ -26,11 +26,11 @@ namespace SudokuSolver.Shared.Services
 
         bool ExistsInColumn((int row, int col) location, int[][] source);
 
-        int[] GetAvailableRowValues((int row, int col) location, int[][] source);
+        int[] GetRemainingRowValues((int row, int col) location, int[][] source);
 
-        int[] GetAvailableColumnValues((int row, int col) location, int[][] source);
+        int[] GetRemainingColumnValues((int row, int col) location, int[][] source);
 
-        int[] GetAvailableSectionValues((int row, int col) location, int[][] source);
+        int[] GetRemainingSectionValues((int row, int col) location, int[][] source);
 
         bool ValidateRow(int row, int[][] source);
 
@@ -243,7 +243,7 @@ namespace SudokuSolver.Shared.Services
             return center.Sum(row => row.Sum(col => col)) == 35;
         }
 
-        public int[] GetAvailableRowValues((int row, int col) location, int[][] source)
+        public int[] GetRemainingRowValues((int row, int col) location, int[][] source)
         {
             int[] available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -252,7 +252,7 @@ namespace SudokuSolver.Shared.Services
             return available.Except(row).ToArray();
         }
 
-        public int[] GetAvailableColumnValues((int row, int col) location, int[][] source)
+        public int[] GetRemainingColumnValues((int row, int col) location, int[][] source)
         {
             int[] available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -261,7 +261,7 @@ namespace SudokuSolver.Shared.Services
             return available.Except(col).ToArray();
         }
 
-        public int[] GetAvailableSectionValues((int row, int col) location, int[][] source)
+        public int[] GetRemainingSectionValues((int row, int col) location, int[][] source)
         {
             int[] available = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
