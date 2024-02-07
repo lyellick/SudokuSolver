@@ -44,49 +44,22 @@ namespace SudokuSolver.Tests
         [Test]
         public void PuzzleIsEqualToExtract()
         {
-            var extract = _service
-                .ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
-
-            Assert.That(_puzzle.IsEqualTo(extract), Is.True);
-        }
-
-        [Test]
-        public void PuzzleSectionIsEqualToExtractSection()
-        {
             var puzzleSection = _service.GetSection((4,1), _puzzle);
 
             var extract = _service
                 .ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
 
             var extractSection = _service.GetSection((4, 1), extract);
+            var extractRow = _service.GetRow((4, 1), extract);
+            var extractColumn = _service.GetColumn((4, 1), extract);
 
-            Assert.That(puzzleSection.IsEqualTo(extractSection), Is.True);
-        }
-
-        [Test]
-        public void PuzzleRowIsEqualToExtractRow()
-        {
-            var puzzleSection = _service.GetRow((4, 1), _puzzle);
-
-            var extract = _service
-                .ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
-
-            var extractSection = _service.GetRow((4, 1), extract);
-
-            Assert.That(puzzleSection.IsEqualTo(extractSection), Is.True);
-        }
-
-        [Test]
-        public void PuzzleColumnIsEqualToExtractColumn()
-        {
-            var puzzleSection = _service.GetColumn((4, 1), _puzzle);
-
-            var extract = _service
-                .ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
-
-            var extractSection = _service.GetColumn((4, 1), extract);
-
-            Assert.That(puzzleSection.IsEqualTo(extractSection), Is.True);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_puzzle.IsEqualTo(extract), Is.True);
+                Assert.That(_service.GetSection((4, 1), _puzzle).IsEqualTo(extractSection), Is.True);
+                Assert.That(_service.GetRow((4, 1), _puzzle).IsEqualTo(extractRow), Is.True);
+                Assert.That(_service.GetColumn((4, 1), _puzzle).IsEqualTo(extractColumn), Is.True);
+            });
         }
 
         [Test]
