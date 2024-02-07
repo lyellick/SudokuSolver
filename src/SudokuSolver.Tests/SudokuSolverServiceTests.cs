@@ -88,5 +88,11 @@ namespace SudokuSolver.Tests
 
             Assert.That(puzzleSection.IsEqualTo(extractSection), Is.True);
         }
+
+        [Test]
+        public void GetAvailableValuesIsValid()
+        {
+            var available = _service.GetAvailableValues((4,0), _puzzle);
+        }
     }
 }

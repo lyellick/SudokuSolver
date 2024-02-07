@@ -33,5 +33,16 @@
 
             return true;
         }
+
+        public static IEnumerable<T> Flatten<T>(this T[][] jaggedArray)
+        {
+            foreach (var array in jaggedArray)
+            {
+                foreach (var item in array)
+                {
+                    yield return item;
+                }
+            }
+        }
     }
 }
