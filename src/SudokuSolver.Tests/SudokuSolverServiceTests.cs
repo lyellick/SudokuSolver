@@ -76,5 +76,16 @@ namespace SudokuSolver.Tests
                 Assert.That(remainingSections.IsEqualTo([2, 3, 5, 7, 8, 9]), Is.True);
             });
         }
+
+        [Test]
+        public void CanSolvePuzzle()
+        {
+            var extract = _service
+                .ExtractGrid(@$"..\..\..\..\..\assets\puzzles\sudoku-light.jpg");
+
+            var result = _service.Backtrack(extract);
+
+            Assert.That(result.IsEqualTo(_answer), Is.True);
+        }
     }
 }

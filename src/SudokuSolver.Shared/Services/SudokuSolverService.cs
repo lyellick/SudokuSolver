@@ -20,11 +20,11 @@ namespace SudokuSolver.Shared.Services
 
         int[] GetColumn((int row, int col) location, int[][] source);
 
-        bool ExistsInSection((int row, int col) location, int[][] source);
+        bool ExistsInSection((int row, int col) location, int[][] source, int value);
 
-        bool ExistsInRow((int row, int col) location, int[][] source);
+        bool ExistsInRow((int row, int col) location, int[][] source, int value);
 
-        bool ExistsInColumn((int row, int col) location, int[][] source);
+        bool ExistsInColumn((int row, int col) location, int[][] source, int value);
 
         int[] GetRemainingRowValues((int row, int col) location, int[][] source);
 
@@ -37,6 +37,12 @@ namespace SudokuSolver.Shared.Services
         bool ValidateColumn(int col, int[][] source);
 
         bool ValidateSection((int row, int col) location, int[][] source);
+
+        int[][] Backtrack(int[][] source);
+
+        bool IsValidPlacement((int row, int col) location, int[][] source, int value);
+
+        (int row, int col)? FindEmptyCell(int[][] source);
     }
 
     public class SudokuSolverService : ISudokuSolverService
@@ -201,26 +207,22 @@ namespace SudokuSolver.Shared.Services
             return cells;
         }
 
-        public bool ExistsInSection((int row, int col) location, int[][] source)
+        public bool ExistsInSection((int row, int col) location, int[][] source, int value)
         {
-            int value = source[location.row][location.col];
+            var section = GetSection(location, source);
 
-            return source.Any(row => row.Contains(value));
+            return section.Any(row => row.Contains(value));
         }
 
-        public bool ExistsInRow((int row, int col) location, int[][] source)
+        public bool ExistsInRow((int row, int col) location, int[][] source, int value)
         {
-            int value = source[location.row][location.col];
-
             var row = GetRow(location, source);
 
             return row.Any(col => col == value);
         }
 
-        public bool ExistsInColumn((int row, int col) location, int[][] source)
+        public bool ExistsInColumn((int row, int col) location, int[][] source, int value)
         {
-            int value = source[location.row][location.col];
-
             var column = GetColumn(location, source);
 
             return column.Any(row => row == value);
@@ -272,9 +274,54 @@ namespace SudokuSolver.Shared.Services
 
         public int[][] Backtrack(int[][] source)
         {
-            Queue<int> queue = new();
+            var emptyCell = FindEmptyCell(source);
 
-            return default;
+            if (emptyCell == null)
+                return source;
+
+            int row = emptyCell.Value.row;
+            int col = emptyCell.Value.col;
+
+            for (int num = 1; num <= 9; num++)
+            {
+                if (IsValidPlacement((row, col), source, num))
+                {
+                    source[row][col] = num;
+
+                    var result = Backtrack(source);
+
+                    if (result != null)
+                        return result;
+
+                    source[row][col] = 0;
+                }
+            }
+
+            return null;
+        }
+
+        public (int row, int col)? FindEmptyCell(int[][] source)
+        {
+            for (int row = 0; row < 9; row++)
+            {
+                for (int col = 0; col < 9; col++)
+                {
+                    if (source[row][col] == 0)
+                        return (row, col);
+                }
+            }
+
+            return null;
+        }
+
+
+        public bool IsValidPlacement((int row, int col) location, int[][] source, int value)
+        {
+            var validRow = !ExistsInRow(location, source, value);
+            var validColumn = !ExistsInColumn(location, source, value);
+            var validSection = !ExistsInSection(location, source, value);
+
+            return validRow && validColumn && validSection;
         }
     }
 }
