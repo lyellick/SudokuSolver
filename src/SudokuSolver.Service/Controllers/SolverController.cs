@@ -4,8 +4,8 @@ using System.Net;
 
 namespace SudokuSolver.Service.Controllers
 {
-    [ApiController]
     [Route("")]
+    [ApiController]
     public class SolverController : ControllerBase
     {
         private readonly ILogger<SolverController> _logger;
@@ -17,24 +17,34 @@ namespace SudokuSolver.Service.Controllers
             _service = service;
         }
 
-        [Route("solve")]
         [HttpPost]
+        [Route("solve")]
         public async Task<IActionResult> SolveAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
-            using var stream = new MemoryStream();
+            try
+            {
+                using var stream = new MemoryStream();
 
-            await file.CopyToAsync(stream);
-            
-            stream.Position = 0;
+                await file.CopyToAsync(stream);
 
-            var puzzle = _service.ExtractGrid(stream);
+                stream.Position = 0;
 
-            var answer = _service.Backtrack(puzzle);
+                var puzzle = _service.ExtractGrid(stream);
 
-            return Ok();
+                var answer = _service.Backtrack(puzzle);
+
+                var result = new { puzzle, answer };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to process puzzle.");
+                return BadRequest();
+            }
         }
     }
 }

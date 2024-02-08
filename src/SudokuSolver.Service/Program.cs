@@ -1,34 +1,28 @@
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 using SudokuSolver.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
-
-builder.Services
     .AddSingleton(builder.Configuration)
-    .AddScoped<ISudokuSolverService, SudokuSolverService>()
-    .AddEndpointsApiExplorer()
-    .AddHttpContextAccessor()
-    .AddEndpointsApiExplorer();
+    .AddScoped<ISudokuSolverService, SudokuSolverService>();
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseSwagger()
-   .UseSwaggerUI();
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseHttpsRedirection()
-   .UseAuthorization();
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
