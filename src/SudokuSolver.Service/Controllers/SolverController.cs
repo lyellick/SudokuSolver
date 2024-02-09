@@ -18,6 +18,32 @@ namespace SudokuSolver.Service.Controllers
         }
 
         [HttpPost]
+        [Route("extract")]
+        public async Task<IActionResult> ExtractAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            try
+            {
+                using var stream = new MemoryStream();
+
+                await file.CopyToAsync(stream);
+
+                stream.Position = 0;
+
+                var puzzle = _service.ExtractGrid(stream);
+
+                return Ok(puzzle);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to process puzzle.");
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
         [Route("solve")]
         public async Task<IActionResult> SolveAsync(IFormFile file)
         {
@@ -36,9 +62,7 @@ namespace SudokuSolver.Service.Controllers
 
                 var answer = _service.Backtrack(puzzle);
 
-                var result = new { puzzle, answer };
-
-                return Ok(result);
+                return Ok(answer);
             }
             catch (Exception ex)
             {
